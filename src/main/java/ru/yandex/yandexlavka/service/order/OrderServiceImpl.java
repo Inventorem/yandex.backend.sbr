@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.yandexlavka.domain.ClientOrder;
 import ru.yandex.yandexlavka.domain.Courier;
 import ru.yandex.yandexlavka.domain.TimeInterval;
-import ru.yandex.yandexlavka.model.*;
+import ru.yandex.yandexlavka.model.order.*;
 import ru.yandex.yandexlavka.repos.OrderRepo;
 
 import java.sql.Timestamp;

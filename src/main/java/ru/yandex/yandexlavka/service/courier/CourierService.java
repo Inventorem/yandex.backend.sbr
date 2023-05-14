@@ -1,14 +1,14 @@
 package ru.yandex.yandexlavka.service.courier;
 
 import org.jetbrains.annotations.NotNull;
-import ru.yandex.yandexlavka.model.*;
+import ru.yandex.yandexlavka.model.courier.*;
 
 public interface CourierService {
     @NotNull
     CourierDto findById(@NotNull Integer courierId);
 
     @NotNull
-    GetCoriersResponse findAll(@NotNull Integer limit, @NotNull Integer offset);
+    GetCouriersResponse findAll(@NotNull Integer limit, @NotNull Integer offset);
 
     @NotNull
     CreateCouriersResponse createCouriers(@NotNull CreateCourierRequest couriers);

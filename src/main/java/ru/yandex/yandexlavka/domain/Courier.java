@@ -1,18 +1,17 @@
 package ru.yandex.yandexlavka.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.Accessors;
-import ru.yandex.yandexlavka.model.CourierType;
+import ru.yandex.yandexlavka.model.courier.CourierType;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+
 @NoArgsConstructor
+@Data
 @Entity
 @Accessors(chain=true)
 @Table(name="courier")

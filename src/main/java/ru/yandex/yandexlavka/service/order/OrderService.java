@@ -1,9 +1,9 @@
 package ru.yandex.yandexlavka.service.order;
 
 import org.jetbrains.annotations.NotNull;
-import ru.yandex.yandexlavka.model.CompleteOrderRequestDto;
-import ru.yandex.yandexlavka.model.CreateOrderRequest;
-import ru.yandex.yandexlavka.model.OrderDto;
+import ru.yandex.yandexlavka.model.order.CompleteOrderRequestDto;
+import ru.yandex.yandexlavka.model.order.CreateOrderRequest;
+import ru.yandex.yandexlavka.model.order.OrderDto;
 
 import java.util.List;
 
