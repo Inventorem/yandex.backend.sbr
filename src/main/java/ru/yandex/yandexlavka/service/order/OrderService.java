@@ -1,5 +1,6 @@
 package ru.yandex.yandexlavka.service.order;
 
+import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import ru.yandex.yandexlavka.model.order.CompleteOrderRequestDto;
 import ru.yandex.yandexlavka.model.order.CreateOrderRequest;
@@ -15,8 +16,8 @@ public interface OrderService {
     List<OrderDto> findAll(@NotNull Integer limit, @NotNull Integer offset);
 
     @NotNull
-    List<OrderDto> createOrders(@NotNull CreateOrderRequest orders);
+    List<OrderDto> createOrders(@Valid @NotNull CreateOrderRequest orders);
 
     @NotNull
-    List<OrderDto> createComplete(@NotNull CompleteOrderRequestDto completedOrders);
+    List<OrderDto> createComplete(@Valid @NotNull CompleteOrderRequestDto completedOrders);
 }

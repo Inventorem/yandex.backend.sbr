@@ -1,9 +1,9 @@
 package ru.yandex.yandexlavka.model.order;
 
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -12,17 +12,17 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class CreateOrderDto {
     @NotNull
-    @Positive
+    @Min(0)
     private Integer cost;
 
     @NotEmpty
     private String[] delivery_hours;
 
     @NotNull
-    @PositiveOrZero
+    @Min(1)
     private Integer regions;
 
     @NotNull
-    @Positive
+    @PositiveOrZero
     private float weight;
 }

@@ -2,7 +2,6 @@ package ru.yandex.yandexlavka.model.courier;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -14,7 +13,6 @@ public class CreateCourierDto {
     private CourierType courier_type;
 
     @NotEmpty
-    @Positive
     private Integer[] regions;
 
     @NotEmpty

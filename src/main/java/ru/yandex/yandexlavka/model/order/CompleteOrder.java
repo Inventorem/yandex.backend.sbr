@@ -1,7 +1,7 @@
 package ru.yandex.yandexlavka.model.order;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,11 +16,11 @@ public class CompleteOrder {
     @NotNull
     private LocalDateTime complete_time;
 
-    @Positive
+    @Min(1)
     @NotNull
     private Integer courier_id;
 
-    @Positive
+    @Min(1)
     @NotNull
     private Long order_id;
 }

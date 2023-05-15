@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import ru.yandex.yandexlavka.domain.Courier;
 import ru.yandex.yandexlavka.domain.Order;
 import ru.yandex.yandexlavka.domain.Region;
@@ -19,6 +20,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 @Service
+@Validated
 @RequiredArgsConstructor
 public class CourierServiceImpl implements CourierService {
     private final CourierRepo courierRepo;
