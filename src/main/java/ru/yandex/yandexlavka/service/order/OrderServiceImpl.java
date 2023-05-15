@@ -2,13 +2,15 @@ package ru.yandex.yandexlavka.service.order;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.yandexlavka.domain.Order;
+import org.springframework.validation.annotation.Validated;
 import ru.yandex.yandexlavka.domain.Courier;
+import ru.yandex.yandexlavka.domain.Order;
 import ru.yandex.yandexlavka.domain.TimeInterval;
 import ru.yandex.yandexlavka.model.order.*;
 import ru.yandex.yandexlavka.repos.CourierRepo;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class OrderServiceImpl implements OrderService {
     private final OrderRepo orderRepo;
     private final CourierRepo courierRepo;
@@ -43,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public @NotNull List<OrderDto> createOrders(@NotNull CreateOrderRequest orders) {
+    public @NotNull List<OrderDto> createOrders(@Valid @NotNull CreateOrderRequest orders) {
         List<OrderDto> dtolist = new ArrayList<>();
         for (int i = 0; i < orders.getOrders().length; i++) {
             Order order = buildOrder(orders.getOrders()[i]);
@@ -54,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public @NotNull List<OrderDto> createComplete(@NotNull CompleteOrderRequestDto completedOrders) {
+    public @NotNull List<OrderDto> createComplete(@Valid @NotNull CompleteOrderRequestDto completedOrders) {
         List<OrderDto> dtolist = new ArrayList<>();
         for (int i = 0; i < completedOrders.getComplete_info().length; i++) {
             Order order = CompleteOrder(completedOrders, i);
@@ -64,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @NotNull
-    private Order CompleteOrder(@NotNull CompleteOrderRequestDto completedOrders, int i) {
+    private Order CompleteOrder(@Valid @NotNull CompleteOrderRequestDto completedOrders, int i) {
         Long order_id = completedOrders.getComplete_info()[i].getOrder_id();
         Order order = orderRepo.findById(completedOrders.getComplete_info()[i].getOrder_id())
                 .orElseThrow(() -> new EntityNotFoundException("Order " + order_id + " is not found"));
@@ -83,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @NotNull
-    private Order buildOrder(@NotNull CreateOrderDto orderdto) {
+    private Order buildOrder(@Valid @NotNull CreateOrderDto orderdto) {
         Order order = new Order();
         order.setCost(orderdto.getCost());
         order.setRegions(orderdto.getRegions());

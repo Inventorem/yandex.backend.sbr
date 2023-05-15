@@ -1,13 +1,14 @@
 package ru.yandex.yandexlavka.service.courier;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.yandexlavka.domain.Order;
 import ru.yandex.yandexlavka.domain.Courier;
+import ru.yandex.yandexlavka.domain.Order;
 import ru.yandex.yandexlavka.domain.Region;
 import ru.yandex.yandexlavka.domain.TimeInterval;
 import ru.yandex.yandexlavka.model.courier.*;
@@ -83,7 +84,7 @@ public class CourierServiceImpl implements CourierService {
 
     @Override
     @Transactional
-    public @NotNull CreateCouriersResponse createCouriers(@NotNull CreateCourierRequest couriers) {
+    public @NotNull CreateCouriersResponse createCouriers(@Valid @NotNull CreateCourierRequest couriers) {
         CourierDto[] dtoarray = new CourierDto[couriers.getCouriers().length];
         for (int i = 0; i < couriers.getCouriers().length; i++) {
             Courier courier = buildCourier(couriers.getCouriers()[i]);
@@ -92,7 +93,7 @@ public class CourierServiceImpl implements CourierService {
         return new CreateCouriersResponse().setCouriers(dtoarray);
     }
 
-    private Courier buildCourier(CreateCourierDto courierdto) {
+    private Courier buildCourier(@Valid CreateCourierDto courierdto) {
         Courier courier = new Courier().setType(courierdto.getCourier_type());
         setWorkingHoursFromDto(courierdto, courier);
         setRegionsFromDto(courierdto, courier);

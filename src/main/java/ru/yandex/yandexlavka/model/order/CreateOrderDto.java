@@ -11,8 +11,8 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class CreateOrderDto {
-    @Positive
     @NotNull
+    @Positive
     private Integer cost;
 
     @NotEmpty
