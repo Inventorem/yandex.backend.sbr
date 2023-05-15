@@ -1,6 +1,7 @@
 package ru.yandex.yandexlavka.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -15,7 +16,7 @@ public class Region {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-
+    @PositiveOrZero
     @Column(name = "index")
     private Integer index;
 }

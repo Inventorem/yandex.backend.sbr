@@ -74,7 +74,8 @@ public class OrderServiceImpl implements OrderService {
         } else {
             throw new EntityExistsException("Order " + order.getId() + " is already completed");
         }
-        Courier courier = courierRepo.getReferenceById(Long.valueOf(completeOrder.getCourier_id()));
+        Courier courier = courierRepo.findById(Long.valueOf(completeOrder.getCourier_id()))
+                .orElseThrow(() -> new EntityNotFoundException("Courier " + completeOrder.getCourier_id() + " is not found"));
         courier.addOrder(order);
         courierRepo.save(courier);
         return order;

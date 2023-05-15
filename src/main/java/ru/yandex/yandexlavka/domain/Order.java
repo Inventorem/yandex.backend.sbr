@@ -29,7 +29,7 @@ public class Order {
     private Integer regions;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "clientorder_id")
+    @JoinColumn(name = "order_table_id")
     private Set<TimeInterval> hours = new HashSet<>();
 
 

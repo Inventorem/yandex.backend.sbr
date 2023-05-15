@@ -4,6 +4,7 @@ import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.yandexlavka.model.courier.*;
 import ru.yandex.yandexlavka.service.courier.CourierService;
@@ -15,20 +16,21 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/couriers")
+@Validated
 public class CourierController {
     private final CourierService courierService;
 
     @GetMapping(value = "/{courier_id}", produces = APPLICATION_JSON_VALUE)
     @RateLimiter(name = "rateLimiter")
-    CourierDto getCourierbyId(@Valid @Min(1) @PathVariable Integer courier_id) {
+    CourierDto getCourierbyId(@Min(1) @PathVariable Integer courier_id) {
 
         return courierService.findById(courier_id);
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @RateLimiter(name = "rateLimiter")
-    GetCouriersResponse getCouriers(@Valid @Min(1) @RequestParam(required = false, defaultValue = "1") Integer limit,
-                                    @Valid @Min(0) @RequestParam(required = false, defaultValue = "0") Integer offset) {
+    GetCouriersResponse getCouriers(@Min(1) @RequestParam(required = false, defaultValue = "1") Integer limit,
+                                    @Min(0) @RequestParam(required = false, defaultValue = "0") Integer offset) {
         return courierService.findAll(limit, offset);
     }
 

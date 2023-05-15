@@ -39,9 +39,9 @@ public class Courier {
     @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
-    public void addOrder(Order clientorder) {
-        this.orders.add(clientorder);
-        clientorder.setCourier(this);
+    public void addOrder(Order order) {
+        this.orders.add(order);
+        order.setCourier(this);
     }
 
 
