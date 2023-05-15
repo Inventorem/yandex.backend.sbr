@@ -8,26 +8,26 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
-@Accessors(chain=true)
+@Accessors(chain = true)
 public class OrderDto {
-        @NotNull
-        @Positive
-        private Integer cost;
+    @NotNull
+    @Positive
+    private Integer cost;
 
-        @NotEmpty
-        private String[] delivery_hours;
+    @NotEmpty
+    private String[] delivery_hours;
 
-        @PositiveOrZero
-        @NotNull
-        private Long order_id;
+    @PositiveOrZero
+    @NotNull
+    private Long order_id;
 
-        @PositiveOrZero
-        @NotNull
-        private Integer regions;
+    @PositiveOrZero
+    @NotNull
+    private Integer regions;
 
-        @NotNull
-        @Positive
-        private Float weight;
+    @NotNull
+    @Positive
+    private Float weight;
 
-        private String completed_time;
+    private String completed_time;
 }

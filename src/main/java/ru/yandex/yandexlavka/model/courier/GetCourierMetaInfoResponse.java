@@ -9,7 +9,7 @@ public class GetCourierMetaInfoResponse {
     private Integer courier_id;
     private CourierType courier_type;
     private Integer[] regions;
-    private String [] working_hours;
+    private String[] working_hours;
     private Integer rating;
     private Integer earnings;
 }

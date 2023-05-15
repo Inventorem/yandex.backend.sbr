@@ -1,42 +1,45 @@
 package ru.yandex.yandexlavka.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Accessors(chain = true)
-@Table(name="clientorder")
-public class ClientOrder {
+@Table(name = "order_table")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name="weight")
+    @Column(name = "weight")
     private float weight;
 
-    @Column(name="regions")
+    @Column(name = "regions")
     private Integer regions;
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "clientorder_id")
     private Set<TimeInterval> hours = new HashSet<>();
 
 
-    @Column(name="cost")
+    @Column(name = "cost")
     private Integer cost;
 
-    @Column(name="completed_time")
-    private Timestamp completed_time;
+    @Column(name = "completed_time")
+    private LocalDateTime completed_time;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Courier courier;
 
 

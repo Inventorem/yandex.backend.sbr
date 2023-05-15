@@ -1,28 +1,29 @@
 package ru.yandex.yandexlavka.service.order;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.yandexlavka.domain.ClientOrder;
+import ru.yandex.yandexlavka.domain.Order;
 import ru.yandex.yandexlavka.domain.Courier;
 import ru.yandex.yandexlavka.domain.TimeInterval;
 import ru.yandex.yandexlavka.model.order.*;
+import ru.yandex.yandexlavka.repos.CourierRepo;
 import ru.yandex.yandexlavka.repos.OrderRepo;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OrderServiceImpl implements OrderService{
-    @Autowired
-    private OrderRepo orderRepo;
+public class OrderServiceImpl implements OrderService {
+    private final OrderRepo orderRepo;
+    private final CourierRepo courierRepo;
+
     @Override
     @Transactional(readOnly = true)
     public @NotNull OrderDto findById(@NotNull Long orderId) {
@@ -35,7 +36,7 @@ public class OrderServiceImpl implements OrderService{
     @Transactional(readOnly = true)
     public @NotNull List<OrderDto> findAll(@NotNull Integer limit, @NotNull Integer offset) {
         return orderRepo.findAll(
-                PageRequest.of(offset, limit)).stream()
+                        PageRequest.of(offset, limit)).stream()
                 .map(this::buildOrderDto)
                 .collect(Collectors.toList());
     }
@@ -43,11 +44,10 @@ public class OrderServiceImpl implements OrderService{
     @Override
     @Transactional
     public @NotNull List<OrderDto> createOrders(@NotNull CreateOrderRequest orders) {
-
         List<OrderDto> dtolist = new ArrayList<>();
-        for (int i = 0; i < orders.getOrders().length; i ++){
-            ClientOrder clientOrder = buildOrder(orders.getOrders()[i]);
-            dtolist.add(buildOrderDto(orderRepo.save(clientOrder)));
+        for (int i = 0; i < orders.getOrders().length; i++) {
+            Order order = buildOrder(orders.getOrders()[i]);
+            dtolist.add(buildOrderDto(orderRepo.save(order)));
         }
         return dtolist;
     }
@@ -56,52 +56,60 @@ public class OrderServiceImpl implements OrderService{
     @Transactional
     public @NotNull List<OrderDto> createComplete(@NotNull CompleteOrderRequestDto completedOrders) {
         List<OrderDto> dtolist = new ArrayList<>();
-        for (int i = 0; i < completedOrders.getComplete_info().length; i++){
-            Long order_id = completedOrders.getComplete_info()[i].getOrder_id();
-            ClientOrder clientOrder =  orderRepo.findById(order_id)
-                    .orElseThrow(() -> new EntityNotFoundException("Order " + order_id + " is not found"));
-            orderUpdateCompletion(clientOrder, completedOrders.getComplete_info()[i]);
-            dtolist.add(buildOrderDto(orderRepo.save(clientOrder)));
+        for (int i = 0; i < completedOrders.getComplete_info().length; i++) {
+            Order order = CompleteOrder(completedOrders, i);
+            dtolist.add(buildOrderDto(orderRepo.save(order)));
         }
         return dtolist;
     }
 
-    private void orderUpdateCompletion(@NotNull ClientOrder clientOrder, @NotNull CompleteOrder completeOrder) {
-        Integer courier_id = completeOrder.getCourier_id();
-        if (completeOrder.getCompleted_time() != null){
-            Timestamp completed_time = Timestamp.valueOf(completeOrder.getCompleted_time());
-            clientOrder.setCompleted_time(completed_time);
+    @NotNull
+    private Order CompleteOrder(@NotNull CompleteOrderRequestDto completedOrders, int i) {
+        Long order_id = completedOrders.getComplete_info()[i].getOrder_id();
+        Order order = orderRepo.findById(completedOrders.getComplete_info()[i].getOrder_id())
+                .orElseThrow(() -> new EntityNotFoundException("Order " + order_id + " is not found"));
+        @NotNull CompleteOrder completeOrder = completedOrders.getComplete_info()[i];
+        if (order.getCompleted_time() == null) {
+            order.setCompleted_time(completeOrder.getComplete_time());
+        } else {
+            throw new EntityExistsException("Order " + order.getId() + " is already completed");
         }
-        clientOrder.setCourier(new Courier().setId(courier_id));
+        Courier courier = courierRepo.getReferenceById(Long.valueOf(completeOrder.getCourier_id()));
+        courier.addOrder(order);
+        courierRepo.save(courier);
+        return order;
     }
 
 
     @NotNull
-    private ClientOrder buildOrder(@NotNull CreateOrderDto orderdto) {
-        ClientOrder clientOrder = new ClientOrder()
-                .setCost(orderdto.getCost())
-                .setRegions(orderdto.getRegions())
-                .setWeight(orderdto.getWeight());
-        for (int i = 0; i < orderdto.getDelivery_hours().length;i++){
+    private Order buildOrder(@NotNull CreateOrderDto orderdto) {
+        Order order = new Order();
+        order.setCost(orderdto.getCost());
+        order.setRegions(orderdto.getRegions());
+        order.setWeight(orderdto.getWeight());
+        for (int i = 0; i < orderdto.getDelivery_hours().length; i++) {
             TimeInterval interval = new TimeInterval(orderdto.getDelivery_hours()[i]);
-            clientOrder.getHours().add(interval);
+            order.getHours().add(interval);
         }
-        return clientOrder;
+        return order;
     }
 
     @NotNull
-    private OrderDto buildOrderDto(@NotNull ClientOrder clientOrder) {
-        OrderDto orderDto = new OrderDto()
-                .setOrder_id(clientOrder.getId())
-                .setCost(clientOrder.getCost())
-                .setWeight(clientOrder.getWeight())
-                .setRegions(clientOrder.getRegions());
-        String [] delivery_hours = new String [clientOrder.getHours().size()];
-        TimeInterval [] current = clientOrder.getHours().toArray(new TimeInterval[0]);
-        for (int i = 0; i < clientOrder.getHours().size(); i ++){
-            delivery_hours[i]=(String.valueOf(current[i].toString()));
+    private OrderDto buildOrderDto(@NotNull Order order) {
+        OrderDto orderDto = new OrderDto();
+        orderDto.setOrder_id(order.getId());
+        orderDto.setCost(order.getCost());
+        orderDto.setWeight(order.getWeight());
+        orderDto.setRegions(order.getRegions());
+        String[] delivery_hours = new String[order.getHours().size()];
+        TimeInterval[] current = order.getHours().toArray(new TimeInterval[0]);
+        for (int i = 0; i < order.getHours().size(); i++) {
+            delivery_hours[i] = (String.valueOf(current[i].toString()));
         }
         orderDto.setDelivery_hours(delivery_hours);
+        if (order.getCompleted_time() != null) {
+            orderDto.setCompleted_time(order.getCompleted_time().toString());
+        }
         return orderDto;
     }
 

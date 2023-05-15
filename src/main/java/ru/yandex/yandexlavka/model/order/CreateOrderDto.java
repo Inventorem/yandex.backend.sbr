@@ -9,14 +9,14 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
-@Accessors(chain=true)
+@Accessors(chain = true)
 public class CreateOrderDto {
     @Positive
     @NotNull
     private Integer cost;
 
     @NotEmpty
-    private String [] delivery_hours;
+    private String[] delivery_hours;
 
     @NotNull
     @PositiveOrZero

@@ -13,8 +13,8 @@ public class CreateCourierDto {
     private CourierType courier_type;
 
     @NotEmpty
-    private Integer [] regions;
+    private Integer[] regions;
 
     @NotEmpty
-    private String [] working_hours;
+    private String[] working_hours;
 }

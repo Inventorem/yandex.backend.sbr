@@ -3,6 +3,8 @@ package ru.yandex.yandexlavka.service.courier;
 import org.jetbrains.annotations.NotNull;
 import ru.yandex.yandexlavka.model.courier.*;
 
+import java.time.LocalDate;
+
 public interface CourierService {
     @NotNull
     CourierDto findById(@NotNull Integer courierId);
@@ -14,5 +16,5 @@ public interface CourierService {
     CreateCouriersResponse createCouriers(@NotNull CreateCourierRequest couriers);
 
     @NotNull
-    GetCourierMetaInfoResponse getMetabyId(@NotNull Integer courierId, @NotNull String startDate, @NotNull String endDate);
+    GetCourierMetaInfoResponse getMetabyId(@NotNull Integer courierId, @NotNull LocalDate startDate, @NotNull LocalDate endDate);
 }

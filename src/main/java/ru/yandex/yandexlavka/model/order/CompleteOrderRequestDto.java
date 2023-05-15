@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
-@Accessors(chain=true)
+@Accessors(chain = true)
 public class CompleteOrderRequestDto {
     @NotEmpty
     private CompleteOrder[] complete_info;
